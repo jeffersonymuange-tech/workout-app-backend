@@ -84,20 +84,20 @@ class WorkoutExercise(db.Model):
     )
 
     id = db.Column(db.Integer, primary_key=True)
-cat > server/app.py << 'EOF'
-from flask import Flask, make_response
-from flask_migrate import Migrate
+    workout_id = db.Column(db.Integer, db.ForeignKey('workouts.id'), nullable=False)
+    exercise_id = db.Column(db.Integer, db.ForeignKey('exercises.id'), nullable=False)
+    reps = db.Column(db.Integer)
+    sets = db.Column(db.Integer)
+    duration_seconds = db.Column(db.Integer)
 
-from models import *
+    workout = db.relationship('Workout', back_populates='workout_exercises')
+    exercise = db.relationship('Exercise', back_populates='workout_exercises')
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    @validates('reps', 'sets', 'duration_seconds')
+    def validate_positive(self, key, value):
+        if value is not None and (not isinstance(value, int) or value <= 0):
+            raise ValueError(f'{key} must be a positive integer.')
+        return value
 
-migrate = Migrate(app, db)
-db.init_app(app)
-
-# Define Routes here
-
-if __name__ == '__main__':
-    app.run(port=5555, debug=True)
+    def __repr__(self):
+        return f'<WorkoutExercise workout={self.workout_id} exercise={self.exercise_id}>'
