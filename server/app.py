@@ -26,7 +26,7 @@ def error(message, status):
 
 
 def save(obj):
-    """Add obj and commit. Returns an error response on failure, else None."""
+    
     try:
         db.session.add(obj)
         db.session.commit()
@@ -39,7 +39,7 @@ def save(obj):
     return None
 
 
-# ---------- Workouts ----------
+
 
 @app.route('/workouts', methods=['GET'])
 def get_workouts():
@@ -77,12 +77,12 @@ def delete_workout(id):
     workout = db.session.get(Workout, id)
     if not workout:
         return error('Workout not found.', 404)
-    db.session.delete(workout)  # cascade removes its WorkoutExercises
+    db.session.delete(workout)  
     db.session.commit()
     return make_response('', 204)
 
 
-# ---------- Exercises ----------
+
 
 @app.route('/exercises', methods=['GET'])
 def get_exercises():
@@ -120,12 +120,12 @@ def delete_exercise(id):
     exercise = db.session.get(Exercise, id)
     if not exercise:
         return error('Exercise not found.', 404)
-    db.session.delete(exercise)  # cascade removes its WorkoutExercises
+    db.session.delete(exercise)  
     db.session.commit()
     return make_response('', 204)
 
 
-# ---------- Workout <-> Exercise ----------
+
 
 @app.route(
     '/workouts/<int:workout_id>/exercises/<int:exercise_id>/workout_exercises',

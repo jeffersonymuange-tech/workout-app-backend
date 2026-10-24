@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 from datetime import date
 
 from app import app
